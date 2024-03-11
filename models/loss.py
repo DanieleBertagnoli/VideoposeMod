@@ -184,9 +184,16 @@ class Loss(nn.Module):
         cls_indices,
         losses,
     ):
+        x = x.to('cuda')
+        RT = RT.to('cuda')
+        cls_indices = cls_indices.to('cuda')
+
         self.losses = losses
         poses = poses.type_as(x)  # batchXnum_boxesX3X4
+        poses = poses.to('cuda')
         K = K.type_as(x).float()
+        K = K.to('cuda')
+
 
         if len(output_r.shape) > 3:
             output_r = output_r.reshape(-1, 4)
@@ -202,17 +209,30 @@ class Loss(nn.Module):
             pts.append(self.points[cls_indices[j].type(torch.LongTensor) - 1])
         pts = torch.stack(pts).type_as(output_r)
 
-        # non-zero indices - To maintain same number of boxes, data is appendded with zeros. See dataloader.py collate_fn
+        # non-zero indices - To maintain the same number of boxes, data is appended with zeros. See dataloader.py collate_fn
         ind = torch.nonzero(poses.sum(1).sum(1))[:, 0]
         pts = pts[ind]
         output_r = output_r[ind]
         output_t = output_t[ind]
         poses = poses[ind]
 
-        # quat loss should be calculated for only non symmetrical objects.
+        #         x, output_r,output_t,current_feat,future_feat,poses,RT,K,cls_indices,losses check if they are on gpu
+        print("x on GPU:", x.is_cuda if hasattr(x, 'is_cuda') else "Not applicable")
+        print("output_r on GPU:", output_r.is_cuda if hasattr(output_r, 'is_cuda') else "Not applicable")
+        print("output_t on GPU:", output_t.is_cuda if hasattr(output_t, 'is_cuda') else "Not applicable")
+        print("current_feat on GPU:", current_feat.is_cuda if hasattr(current_feat, 'is_cuda') else "Not applicable")
+        print("future_feat on GPU:", future_feat.is_cuda if hasattr(future_feat, 'is_cuda') else "Not applicable")
+        print("poses on GPU:", poses.is_cuda if hasattr(poses, 'is_cuda') else "Not applicable")
+        print("RT on GPU:", RT.is_cuda if hasattr(RT, 'is_cuda') else "Not applicable")
+        print("K on GPU:", K.is_cuda if hasattr(K, 'is_cuda') else "Not applicable")
+        print("cls_indices on GPU:", cls_indices.is_cuda if hasattr(cls_indices, 'is_cuda') else "Not applicable")
+
+
+        # quat loss should be calculated for only non-symmetrical objects.
         quat_loss, quat_regularisation_loss = self.quat_loss(output_r, poses)
         translation_loss, r_loss, rt_loss = self._3d_distance_loss(
             output_r, output_t, poses, pts)
+
 
         loss_ = float_pt([0]).type_as(x).requires_grad_()
         loss_dict = {}
