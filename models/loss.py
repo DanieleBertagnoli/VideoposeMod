@@ -59,9 +59,9 @@ class Loss(nn.Module):
 
     def quat_loss(self, output_r, poses, eps=1e-7):
         rot = poses[:, :, 0:3].contiguous()
-        gt = matrix_to_quaternion(rot).to('cuda')
+        gt = matrix_to_quaternion(rot)
 
-        est = self.normalize_quaternion(output_r).to('cuda')
+        est = self.normalize_quaternion(output_r)
         inn_prod = torch.mm(est, gt.t())
         inn_prod = inn_prod.diag()
 
@@ -193,16 +193,6 @@ class Loss(nn.Module):
             output_t = output_t.reshape(-1, 3)
             cls_indices = cls_indices.reshape(-1)
             poses = poses.reshape(-1, 3, 4)
-
-        print("output_r device:", output_r.device)
-        print("output_t device:", output_t.device)
-        print("current_feat device:", current_feat.device)
-        print("future_feat device:", future_feat.device)
-        print("poses device:", poses.device)
-        print("RT device:", RT.device)
-        print("K device:", K.device)
-        print("cls_indices device:", cls_indices.device)
-        print("x device:", x.device)
 
         # 3d loss
         ################
