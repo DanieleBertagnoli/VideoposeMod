@@ -216,18 +216,6 @@ class Loss(nn.Module):
         output_t = output_t[ind]
         poses = poses[ind]
 
-        #         x, output_r,output_t,current_feat,future_feat,poses,RT,K,cls_indices,losses check if they are on gpu
-        print("x on GPU:", x.is_cuda if hasattr(x, 'is_cuda') else "Not applicable")
-        print("output_r on GPU:", output_r.is_cuda if hasattr(output_r, 'is_cuda') else "Not applicable")
-        print("output_t on GPU:", output_t.is_cuda if hasattr(output_t, 'is_cuda') else "Not applicable")
-        print("current_feat on GPU:", current_feat.is_cuda if hasattr(current_feat, 'is_cuda') else "Not applicable")
-        print("future_feat on GPU:", future_feat.is_cuda if hasattr(future_feat, 'is_cuda') else "Not applicable")
-        print("poses on GPU:", poses.is_cuda if hasattr(poses, 'is_cuda') else "Not applicable")
-        print("RT on GPU:", RT.is_cuda if hasattr(RT, 'is_cuda') else "Not applicable")
-        print("K on GPU:", K.is_cuda if hasattr(K, 'is_cuda') else "Not applicable")
-        print("cls_indices on GPU:", cls_indices.is_cuda if hasattr(cls_indices, 'is_cuda') else "Not applicable")
-
-
         # quat loss should be calculated for only non-symmetrical objects.
         quat_loss, quat_regularisation_loss = self.quat_loss(output_r, poses)
         translation_loss, r_loss, rt_loss = self._3d_distance_loss(

@@ -196,8 +196,8 @@ def solve(
                     t0 = time.time()
                     loss, outputs = trainer.forward_impl(batch, rank)
 
-                    torch.distributed.all_reduce(loss)
-                    loss = loss / world_size
+                    #torch.distributed.all_reduce(loss)
+                    #loss = loss / world_size
                     outputs = gather_dict(outputs, world_size)
 
                     output = outputs["pose_out"]
