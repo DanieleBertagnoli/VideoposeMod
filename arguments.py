@@ -12,7 +12,7 @@ def str2bool(v):
     elif v.lower() in ("no", "false", "f", "n", "0"):
         return False
     else:
-        raise argparse.ArgumentTypeError("Boolean value expected.")
+        raise argparse.ArgumentTypeError("Boolean valufe expected.")
 
 
 def str2list(v):
@@ -110,7 +110,7 @@ def parse_args():
     # Model training parameters
     parser.add_argument(
         "--num_epochs",
-        default=400,
+        default=20,
         type=int,
         help="Number of epochs",
     )
