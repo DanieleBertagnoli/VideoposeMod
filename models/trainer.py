@@ -337,8 +337,14 @@ class Trainer(GenericTrainer):
         split_losses.rt_loss.update(output_losses["rt_loss"])
 
         plot = visualise(output["pose_out"], batch, self.points, self.classes)
-        if counter % (self.args.split_dataset_size // 100) == 0:
-            writer.log_images(f"{split}_projection", plot, step=0)
+        if counter % (self.args.split_dataset_size // 10) == 0:
+            
+            path = os.path.join(os.path.dirname(__file__), '..', 'Plots')
+            if not os.path.exists(path):
+                os.makedirs(path)
+
+            cv2.imwrite(path, plot)
+            #writer.log_images(f"{split}_projection", plot, step=0)
 
         # prints losses
         format_dictloss(
