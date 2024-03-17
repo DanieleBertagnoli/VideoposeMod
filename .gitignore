@@ -3,7 +3,7 @@
 *._
 *.png
 __pycache__
-/venv
+venv/
 /.idea
 /weights
 /pwc/*.pytorch
