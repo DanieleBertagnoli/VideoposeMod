@@ -343,7 +343,11 @@ class Trainer(GenericTrainer):
             if not os.path.exists(path):
                 os.makedirs(path)
 
-            cv2.imwrite(path, plot)
+            timestamp = datetime.datetime.now().strftime("%d_%H_%M_%S")
+            filename = f"{timestamp}.png"
+            if len(plot.shape) > 2:
+                plot = plot.transpose(1, 2, 0)
+            cv2.imwrite(os.path.join(path, filename), cv2.cvtColor(plot, cv2.COLOR_RGB2BGR))
             #writer.log_images(f"{split}_projection", plot, step=0)
 
         # prints losses
